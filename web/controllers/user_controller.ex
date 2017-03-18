@@ -3,7 +3,7 @@ defmodule WeirdStuff.UserController do
 
   alias WeirdStuff.{User, Device, Message}
 
-  plug :authorize_and_assign_user
+  plug :authorize_and_assign_user when not action in [:new, :create]
 
   def index(conn, _params) do
     users = Repo.all(User)
@@ -26,7 +26,7 @@ defmodule WeirdStuff.UserController do
       {:ok, _user} ->
         conn
         |> put_flash(:info, "User created successfully.")
-        |> redirect(to: user_path(conn, :index))
+        |> redirect(to: session_path(conn, :new))
       {:error, changeset} ->
         render(conn, "new.html", changeset: changeset)
     end
