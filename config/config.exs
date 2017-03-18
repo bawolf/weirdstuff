@@ -22,12 +22,6 @@ config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
 
-config :guardian, Guardian,
-  issuer: "WeirdStuff",
-  ttl: { 1, :days },
-  verify_issuer: true,
-  serializer: WeirdStuff.GuardianSerializer
-
 config :comeonin, bcrypt_log_rounds: 14
 
 # Import environment specific config. This must remain at the bottom

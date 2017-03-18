@@ -41,6 +41,3 @@ config :weird_stuff, WeirdStuff.Repo,
   database: "weird_stuff_dev",
   hostname: "localhost",
   pool_size: 10
-
-config :guardian, Guardian,
-  secret_key: "This is a secret key"
