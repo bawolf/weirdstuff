@@ -1,4 +1,4 @@
-defmodule WeirdStuff.LayoutView do
+defmodule WeirdStuff.UserView do
   use WeirdStuff.Web, :view
 
   def current_user(conn) do
