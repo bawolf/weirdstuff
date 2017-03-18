@@ -3,7 +3,7 @@ defmodule WeirdStuff.UserController do
 
   alias WeirdStuff.{User, Device, Message}
 
-  plug :authorize_and_assign_user when not action in [:new, :create]#[:index, :show, :edit, :update, :delete]
+  plug :authorize_and_assign_user when not action in [:new, :create]
 
   def index(conn, _params) do
     users = Repo.all(User)
