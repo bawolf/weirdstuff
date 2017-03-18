@@ -32,6 +32,6 @@ defmodule WeirdStuff.Router do
   scope "/api", WeirdStuff do
     pipe_through :api
 
-    get "/device_messages", DeviceMessageController, :show
+    resources "/device_messages", DeviceMessageController, only: [:show]
   end
 end

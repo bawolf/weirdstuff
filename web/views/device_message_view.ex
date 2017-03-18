@@ -1,11 +1,7 @@
-defmodule WeirdStuff.MessageDeviceView do
+defmodule WeirdStuff.DeviceMessageView do
   use WeirdStuff.Web, :view
 
   def render("index.json", %{message: message}) do
-    render_one(message, WeirdStuff.MessageDeviceView, "message.json")
-  end
-
-  def render("message.json", %{message: message}) do
     %{message: message.body}
   end
 
