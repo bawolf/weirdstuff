@@ -73,9 +73,6 @@ defmodule WeirdStuff.UserController do
 
   def delete(conn, %{"id" => id}) do
     user = Repo.get!(User, id)
-
-    # Here we use delete! (with a bang) because we expect
-    # it to always work (and if it does not, it will raise).
     Repo.delete!(user)
 
     conn
@@ -83,31 +80,27 @@ defmodule WeirdStuff.UserController do
     |> redirect(to: user_path(conn, :index))
   end
 
-  defp authorize_user(conn, _opts) do
-    user = get_session(conn, :current_user)
-    if user do
-      conn
-    else
-      conn
-      |> put_flash(:error, "You are not authorized to view that.")
-      |> redirect(to: session_path(conn, :new))
-      |> halt()
-    end
-  end
-
   defp authorize_and_assign_user(conn, _opts) do
+    current_user = get_session(conn, :current_user)
     case conn.params do
       %{"id" => user_id} ->
-          if user_id == get_session(conn, :current_user).id do
+        if user_id == get_session(conn, :current_user).id do
             conn
-          else
-            conn
-            |> put_flash(:error, "You are not authorized to view that.")
-            |> redirect(to: user_path(conn, :index))
-            |> halt()
-          end
+        else
+          conn
+          |> put_flash(:error, "You are not authorized to view that.")
+          |> redirect(to: user_path(conn, :index))
+          |> halt()
+        end
       _ ->
-        conn
+        if current_user == nil do
+          conn
+          |> put_flash(:error, "You are not authorized to view that.")
+          |> redirect(to: session_path(conn, :new))
+          |> halt()
+        else
+          conn
+        end
     end
   end
 end

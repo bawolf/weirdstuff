@@ -3,8 +3,7 @@ defmodule WeirdStuff.DeviceController do
 
   alias WeirdStuff.{Repo, User, Message, Device}
 
-  plug :authorize_user when action in [:index, :new, :create]
-  plug :assign_user when action in [:index, :new, :create]
+  plug :authorize_and_assign_user
 
   def new(conn, %{"user_id" => user_id}) do
     user = Repo.get!(User, user_id)
@@ -36,25 +35,27 @@ defmodule WeirdStuff.DeviceController do
     |> redirect(to: user_path(conn, :show, user_id))
   end
 
-  defp assign_user(conn, _opts) do
+  defp authorize_and_assign_user(conn, _opts) do
+    current_user = get_session(conn, :current_user)
     case conn.params do
       %{"user_id" => user_id} ->
-        user = Repo.get(WeirdStuff.User, user_id)
-        assign(conn, :user, user)
+        if user_id == get_session(conn, :current_user).id do
+            conn
+        else
+          conn
+          |> put_flash(:error, "You are not authorized to view that.")
+          |> redirect(to: user_path(conn, :index))
+          |> halt()
+        end
       _ ->
-        conn
-    end
-  end
-
-  defp authorize_user(conn, _opts) do
-    current_user = get_session(conn, :current_user)
-    if current_user do
-      conn
-    else
-      conn
-      |> put_flash(:error, "You are not authorized to view that.")
-      |> redirect(to: session_path(conn, :new))
-      |> halt()
+        if current_user == nil do
+          conn
+          |> put_flash(:error, "You are not authorized to view that.")
+          |> redirect(to: session_path(conn, :new))
+          |> halt()
+        else
+          conn
+        end
     end
   end
 end

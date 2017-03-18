@@ -62,19 +62,26 @@ defmodule WeirdStuff.MessageController do
   end
 
   defp authorize_and_assign_user(conn, _opts) do
+    current_user = get_session(conn, :current_user)
     case conn.params do
       %{"user_id" => user_id} ->
-          if user_id == get_session(conn, :current_user).id do
-            user = Repo.get(WeirdStuff.User, user_id)
-            assign(conn, :user, user)
-          else
+        if user_id == get_session(conn, :current_user).id do
             conn
-            |> put_flash(:error, "You are not authorized to view that.")
-            |> redirect(to: user_path(conn, :index))
-            |> halt()
-          end
+        else
+          conn
+          |> put_flash(:error, "You are not authorized to view that.")
+          |> redirect(to: user_path(conn, :index))
+          |> halt()
+        end
       _ ->
-        conn
+        if current_user == nil do
+          conn
+          |> put_flash(:error, "You are not authorized to view that.")
+          |> redirect(to: session_path(conn, :new))
+          |> halt()
+        else
+          conn
+        end
     end
   end
 end
