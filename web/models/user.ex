@@ -1,6 +1,7 @@
 defmodule WeirdStuff.User do
   use WeirdStuff.Web, :model
   import Comeonin.Bcrypt, only: [hashpwsalt: 1]
+  alias WeirdStuff.{ Message, Device }
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @derive {Phoenix.Param, key: :id}
@@ -11,6 +12,9 @@ defmodule WeirdStuff.User do
 
     field :password, :string, virtual: true
     field :password_confirmation, :string, virtual: true 
+    has_many :sent_messages, Message, foreign_key: :sender_id
+    has_many :received_messages, Message, foreign_key: :receiver_id
+    has_many :devices, Device, foreign_key: :owner_id
 
     timestamps()
   end

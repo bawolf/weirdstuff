@@ -20,11 +20,11 @@ defmodule WeirdStuff.SessionController do
     failed_login(conn)
   end
 
-  def delete(conn, _params) do
+  def show(conn, _params) do
     conn
     |> delete_session(:current_user)
     |> put_flash(:info, "Signed out successfully!")
-    |> redirect(to: page_path(conn, :index))
+    |> redirect(to: session_path(conn, :new))
   end
 
   defp sign_in(user, password, conn) when is_nil(user) do
@@ -36,7 +36,7 @@ defmodule WeirdStuff.SessionController do
       conn
       |> put_session(:current_user, %{id: user.id, email: user.email})
       |> put_flash(:info, "Sign in successful!")
-      |> redirect(to: page_path(conn, :index))
+      |> redirect(to: user_path(conn, :index))
     else
       failed_login(conn)
     end
@@ -47,7 +47,7 @@ defmodule WeirdStuff.SessionController do
     conn
     |> put_session(:current_user, nil)
     |> put_flash(:error, "Invalid email/password combination!")
-    |> redirect(to: page_path(conn, :index))
+    |> redirect(to: user_path(conn, :new))
     |> halt()
   end
 end

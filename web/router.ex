@@ -20,13 +20,18 @@ defmodule WeirdStuff.Router do
   scope "/", WeirdStuff do
     pipe_through :browser # Use the default browser stack
 
-    get "/", PageController, :index
-    resources "/users", UserController
-    resources "/sessions", SessionController, only: [:new, :create, :delete]
+    get "/", SessionController, :new
+    resources "/users", UserController do
+      resources "/messages", MessageController, only: [:new, :create, :index]
+      resources "/devices", DeviceController, only: [:new, :create, :delete]
+    end
+    resources "/sessions", SessionController, only: [:new, :create, :show]
   end
 
   # Other scopes may use custom stacks.
-  # scope "/api", WeirdStuff do
-  #   pipe_through :api
-  # end
+  scope "/api", WeirdStuff do
+    pipe_through :api
+
+    get "/device_messages", DeviceMessageController, :show
+  end
 end

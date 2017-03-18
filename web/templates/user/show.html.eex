@@ -1,13 +1,56 @@
-<h2>Show user</h2>
+<h2 class="text-right"><%= @user.email %></h2>
 
-<ul>
+<h3>Registered Devices</h3>
+<%= link "Create Device", to: user_device_path(@conn, :new, @user) %>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Code</th>
+      <th class="text-right">Date Created</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= for device <- @devices do %>
+      <tr>
+        <td><%= device.name %></td>
+        <td><%= device.code %></td>
+        <td class="text-right">
+          <%= WeirdStuff.DateBeautifier.perform(device.inserted_at) %>
+        </td>
+        <td>
+          <%= link "Delete", to: user_device_path(@conn, :delete, @user, device), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
 
-  <li>
-    <strong>email:</strong>
-    <%= @user.email %>
-  </li>
+<h3>Recent Messages</h3>
+<%= link "Send Yourself a Message", to: user_message_path(@conn, :new, @user) %>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Body</th>
+      <th>Sender</th>
+      <th>Receiver</th>
+      <th class="text-right">Time Sent</th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for message <- @messages do %>
+    <tr>
+      <td><%= message.body %></td>
+      <td><%= message.sender.email %></td>
+      <td><%= message.receiver.email %></td>
 
-</ul>
+      <td class="text-right">
+        <%= WeirdStuff.DateBeautifier.perform(message.inserted_at) %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
 
-<%= link "Edit", to: user_path(@conn, :edit, @user) %>
+<%= link "Edit", to: user_path(@conn, :edit, @user) %><br>
 <%= link "Back", to: user_path(@conn, :index) %>

@@ -1,1 +1,11 @@
 /* This file is for your main application css. */
+
+.signed-in {
+  background: none !important;
+  color: black !important;
+}
+
+.signed-in:hover {
+  background: none !important;
+  color: black !important;
+}
